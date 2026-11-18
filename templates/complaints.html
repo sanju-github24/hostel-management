@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block body %}
+<h1>Complaints</h1>
+<form class="row" method="post">
+ <label>Student<select name="student_id">{% for s in students %}<option value="{{ s.student_id }}">{{ s.name }}</option>{% endfor %}</select></label>
+ <label>Category<select name="category_id">{% for c in cats %}<option value="{{ c.category_id }}">{{ c.name }}</option>{% endfor %}</select></label>
+ <label>Priority<select name="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+ <label>Assign to<select name="staff_id"><option value="">Unassigned</option>{% for s in staff %}<option value="{{ s.staff_id }}">{{ s.name }} ({{ s.role }})</option>{% endfor %}</select></label>
+ <label style="flex:1;min-width:220px">Description<input name="description" required></label>
+ <button>Raise complaint</button>
+</form>
+<form method="post" action="{{ url_for('escalate') }}" class="row" style="justify-content:space-between;align-items:center">
+ <span>Complaints unresolved for 3 or more days are raised to High priority.</span><button>Escalate overdue complaints</button></form>
+<p class="filters">Show:
+ {% for v,l in [('','All'),('Open','Open'),('In Progress','In progress'),('Resolved','Resolved')] %}<a href="?status={{ v }}" class="{{ 'on' if status==v }}">{{ l }}</a>{% endfor %}</p>
+<div class="wrap"><table><tr><th>#</th><th>Student</th><th>Category</th><th>Issue</th><th>Priority</th><th>Days</th><th>Status and owner</th></tr>
+{% for c in rows %}<tr><td>{{ c.complaint_id }}</td><td>{{ c.student }}</td><td>{{ c.category }}</td><td>{{ c.description }}</td>
+<td><span class="tag {{ c.priority }}">{{ c.priority }}</span></td><td>{{ c.age_days }}</td>
+<td><form method="post" action="{{ url_for('update_complaint', cid=c.complaint_id) }}" style="display:flex;gap:.3rem;flex-wrap:wrap">
+ <select name="status">{% for s in ['Open','In Progress','Resolved'] %}<option {{ 'selected' if c.status==s }}>{{ s }}</option>{% endfor %}</select>
+ <select name="staff_id"><option value="">Unassigned</option>{% for s in staff %}<option value="{{ s.staff_id }}" {{ 'selected' if c.staff_id==s.staff_id }}>{{ s.name }}</option>{% endfor %}</select>
+ <button class="ghost">Update</button></form></td></tr>
+{% else %}<tr><td colspan="7">No complaints in this view.</td></tr>{% endfor %}</table></div>
+{% endblock %}

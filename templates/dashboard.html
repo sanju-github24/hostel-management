@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block body %}
+<h1>Hostel overview</h1>
+<div class="stats">
+ <div class="stat"><b>{{ stats.students }}</b><span>Students</span></div>
+ <div class="stat {{ 'warn' if stats.open_complaints }}"><b>{{ stats.open_complaints }}</b><span>Complaints not resolved</span></div>
+ <div class="stat {{ 'warn' if stats.escalated }}"><b>{{ stats.escalated }}</b><span>Need warden action (High, 3+ days)</span></div>
+ <div class="stat"><b>{{ stats.free_beds }}</b><span>Free beds</span></div>
+ <div class="stat {{ 'warn' if stats.overdue_amount }}"><b>₹{{ '{:,.0f}'.format(stats.overdue_amount) }}</b><span>Fees overdue</span></div>
+</div>
+<div class="grid2"><div>
+<h2>Longest-waiting complaints</h2>
+{% if urgent %}<div class="wrap"><table><tr><th>Student</th><th>Category</th><th>Status</th><th>Days</th></tr>
+{% for c in urgent %}<tr><td>{{ c.student }}</td><td>{{ c.category }}</td><td><span class="tag {{ c.status|replace(' ','-') }}">{{ c.status }}</span></td><td>{{ c.days_pending }}</td></tr>{% endfor %}</table></div>
+{% else %}<p class="empty">Nothing pending. Every complaint is resolved.</p>{% endif %}
+</div><div>
+<h2>Overdue fees</h2>
+{% if defaulters %}<div class="wrap"><table><tr><th>Student</th><th>Type</th><th>Amount</th><th>Days late</th></tr>
+{% for d in defaulters %}<tr><td>{{ d.name }}</td><td>{{ d.fee_type }}</td><td>₹{{ '{:,.0f}'.format(d.amount) }}</td><td>{{ d.days_overdue }}</td></tr>{% endfor %}</table></div>
+{% else %}<p class="empty">No overdue fees.</p>{% endif %}
+</div></div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<h1>Rooms and allocation</h1>
+<h2>Allocate a room</h2>
+{% if unhoused %}
+<form class="row" method="post" action="{{ url_for('allocate') }}">
+ <label>Student<select name="student_id">{% for s in unhoused %}<option value="{{ s.student_id }}">{{ s.name }}</option>{% endfor %}</select></label>
+ <label>Room<select name="room_id">{% for r in occ if r.free_beds > 0 %}<option value="{{ r.room_id }}">{{ r.hostel }} / {{ r.room_no }} ({{ r.free_beds }} free)</option>{% endfor %}</select></label>
+ <button>Allocate</button></form>
+{% else %}<p class="empty">Every student has a room.</p>{% endif %}
+<h2>Occupancy</h2>
+<div class="wrap"><table><tr><th>Hostel</th><th>Room</th><th>Occupied</th><th>Free beds</th></tr>
+{% for r in occ %}<tr><td>{{ r.hostel }}</td><td>{{ r.room_no }}</td>
+<td><span class="bar"><i style="width:{{ (r.occupied / r.capacity * 100)|round }}%"></i></span> {{ r.occupied }}/{{ r.capacity }}</td>
+<td>{{ r.free_beds }}</td></tr>{% endfor %}</table></div>
+<h2>Current residents</h2>
+<div class="wrap"><table><tr><th>Student</th><th>Hostel</th><th>Room</th><th>Since</th><th></th></tr>
+{% for a in current %}<tr><td>{{ a.name }}</td><td>{{ a.hostel }}</td><td>{{ a.room_no }}</td><td>{{ a.start_date }}</td>
+<td><form method="post" action="{{ url_for('vacate', aid=a.allocation_id) }}"><button class="ghost">Vacate</button></form></td></tr>{% endfor %}</table></div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block body %}
+<h1>Fees</h1>
+<form class="row" method="post">
+ <label>Student<select name="student_id">{% for s in students %}<option value="{{ s.student_id }}">{{ s.name }}</option>{% endfor %}</select></label>
+ <label>Fee type<select name="fee_type"><option>Hostel</option><option>Mess</option><option>Fine</option></select></label>
+ <label>Amount (₹)<input name="amount" type="number" min="1" step="0.01" required></label>
+ <label>Due date<input name="due_date" type="date" required></label>
+ <button>Add fee</button>
+</form>
+<p class="filters">Show:
+ {% for v,l in [('','All'),('Pending','Pending'),('Paid','Paid')] %}<a href="?view={{ v }}" class="{{ 'on' if only==v }}">{{ l }}</a>{% endfor %}</p>
+<div class="wrap"><table><tr><th>Student</th><th>Type</th><th>Amount</th><th>Due</th><th>Status</th><th></th></tr>
+{% for f in rows %}<tr><td>{{ f.name }}</td><td>{{ f.fee_type }}</td><td>₹{{ '{:,.0f}'.format(f.amount) }}</td><td>{{ f.due_date }}</td>
+<td><span class="tag {{ f.status }}">{{ f.status }}</span>{% if f.status=='Pending' and f.days_late %} <small>{{ f.days_late }} days late</small>{% endif %}</td>
+<td>{% if f.status=='Pending' %}<form method="post" action="{{ url_for('pay', pid=f.payment_id) }}"><button class="ghost">Mark paid</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="6">No fees in this view.</td></tr>{% endfor %}</table></div>
+{% endblock %}

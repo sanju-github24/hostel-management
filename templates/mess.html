@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block body %}
+<h1>Mess plans</h1>
+<form class="row" method="post">
+ <label>Student<select name="student_id">{% for s in students %}<option value="{{ s.student_id }}">{{ s.name }}</option>{% endfor %}</select></label>
+ <label>Plan<select name="plan_id">{% for p in plans %}<option value="{{ p.plan_id }}">{{ p.plan_name }} (₹{{ '{:,.0f}'.format(p.monthly_charge) }})</option>{% endfor %}</select></label>
+ <label>Month<input name="month" type="number" min="1" max="12" required></label>
+ <label>Year<input name="year" type="number" min="2020" required></label>
+ <button>Subscribe</button>
+</form>
+<h2>This month by plan</h2>
+{% if summary %}<div class="wrap"><table><tr><th>Plan</th><th>Students</th><th>Revenue</th></tr>
+{% for s in summary %}<tr><td>{{ s.plan_name }}</td><td>{{ s.students }}</td><td>₹{{ '{:,.0f}'.format(s.revenue) }}</td></tr>{% endfor %}</table></div>
+{% else %}<p class="empty">No subscriptions for the current month yet.</p>{% endif %}
+<h2>All subscriptions</h2>
+<div class="wrap"><table><tr><th>Student</th><th>Plan</th><th>Month</th><th>Charge</th></tr>
+{% for s in subs %}<tr><td>{{ s.name }}</td><td>{{ s.plan_name }}</td><td>{{ '%02d'|format(s.month) }}/{{ s.year }}</td><td>₹{{ '{:,.0f}'.format(s.monthly_charge) }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

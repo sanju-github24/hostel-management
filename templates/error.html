@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<h1>Can't reach the database</h1>
+<p class="flash error">{{ msg }}</p>
+<p>Check that MySQL is running, that you ran the three files in the sql folder, and that DB_USER and DB_PASSWORD match your MySQL login.</p>
+{% endblock %}

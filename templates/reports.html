@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block body %}
+<h1>Reports</h1>
+<h2>Complaint resolution time by category</h2>
+<div class="wrap"><table><tr><th>Category</th><th>Resolved</th><th>Average days</th></tr>
+{% for x in r.resolution %}<tr><td>{{ x.category }}</td><td>{{ x.resolved }}</td><td>{{ x.avg_days }}</td></tr>{% endfor %}</table></div>
+<h2>Fee collection and pending</h2>
+<div class="wrap"><table><tr><th>Type</th><th>Collected</th><th>Pending</th></tr>
+{% for x in r.fees %}<tr><td>{{ x.fee_type }}</td><td>₹{{ '{:,.0f}'.format(x.collected) }}</td><td>₹{{ '{:,.0f}'.format(x.pending) }}</td></tr>{% endfor %}</table></div>
+<h2>Hostel occupancy</h2>
+<div class="wrap"><table><tr><th>Hostel</th><th>Beds</th><th>Occupied</th><th>Free</th></tr>
+{% for x in r.occupancy %}<tr><td>{{ x.hostel }}</td><td>{{ x.beds }}</td><td>{{ x.occupied }}</td><td>{{ x.free }}</td></tr>{% endfor %}</table></div>
+<div class="grid2"><div><h2>Students with above-average complaints</h2>
+<div class="wrap"><table><tr><th>Student</th><th>Complaints</th></tr>{% for x in r.frequent %}<tr><td>{{ x.name }}</td><td>{{ x.complaints }}</td></tr>{% else %}<tr><td colspan="2">None</td></tr>{% endfor %}</table></div></div>
+<div><h2>Students who never complained</h2>
+<div class="wrap"><table><tr><th>Student</th></tr>{% for x in r.no_complaints %}<tr><td>{{ x.name }}</td></tr>{% else %}<tr><td>None</td></tr>{% endfor %}</table></div></div></div>
+{% endblock %}
